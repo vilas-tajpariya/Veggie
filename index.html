@@ -1,0 +1,1673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#090d12">
+<title>Exotic Veggies – Stock, Billing, Continuous Voice & Khata v5.6</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#090d12;
+  --s1:#0f151c;
+  --s2:#151d26;
+  --bd:#212b37;
+  --tx:#e8eef5;
+  --mu:#8795a6;
+  --ac:#34d399;
+  --ac-glow:#34d39922;
+  --rd:#f87171;
+  --rd-glow:#f8717122;
+  --am:#fbbf24;
+  --bl:#60a5fa;
+  --pu:#a78bfa;
+  color-scheme:dark;
+  --ease-spring:cubic-bezier(0.16, 1, 0.3, 1);
+}
+body{
+  font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  background:var(--bg) radial-gradient(900px 400px at 85% -10%,#10b98118,transparent) no-repeat;
+  color:var(--tx);
+  min-height:100vh;
+  -webkit-tap-highlight-color:transparent;
+  -webkit-user-select:none;
+  user-select:none;
+  overflow-x:hidden;
+}
+input,select,textarea{user-select:text;-webkit-user-select:text}
+button,input,select{font:inherit;color:inherit}
+
+button, .btn, .nb, .ib, .cb, select, input {
+  transition: all 0.2s var(--ease-spring);
+}
+button:active, .btn:active {
+  transform: scale(0.96);
+}
+
+.side{position:fixed;inset:0 auto 0 0;width:240px;background:var(--s1);border-right:1px solid var(--bd);padding:20px 14px;display:flex;flex-direction:column;gap:22px;z-index:30}
+.brand{display:flex;gap:11px;align-items:center;padding:0 6px}
+.logo{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,#10b981,#065f46);font-size:21px;box-shadow:0 4px 12px #10b98133}
+.logo:hover{transform:rotate(8deg) scale(1.05)}
+.brand b{display:block;font-size:15px}.brand small{color:var(--mu);font-size:11px}
+.nb{display:flex;gap:11px;align-items:center;width:100%;padding:10px 12px;border:0;background:none;color:var(--mu);border-radius:10px;cursor:pointer;font-weight:500;margin-bottom:4px}
+.nb:hover{background:var(--s2);color:var(--tx);transform:translateX(3px)}
+.nb.on{background:#34d3991a;color:var(--ac);font-weight:600;box-shadow:inset 3px 0 0 var(--ac)}
+.sf{margin-top:auto;font-size:12px;color:var(--mu);display:flex;gap:9px;align-items:center;padding:11px;border:1px solid var(--bd);border-radius:10px;background:var(--s1)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--ac);box-shadow:0 0 8px var(--ac);flex:none;animation:pulse 2s infinite ease-in-out}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.85)}}
+
+.main{margin-left:240px;padding:26px 30px 48px;max-width:1120px;min-height:100vh}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;gap:12px;flex-wrap:wrap}
+.top h1{font-size:23px;letter-spacing:-.02em;font-weight:700}
+input,select{background:var(--s2);border:1px solid var(--bd);border-radius:9px;padding:8px 10px;outline:0;width:100%}
+input:focus,select:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-glow)}
+.top input{width:auto}
+
+.card{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:18px;box-shadow:0 4px 16px #00000022;transition:transform 0.25s var(--ease-spring), box-shadow 0.25s var(--ease-spring)}
+.card:hover{border-color:#2a3644}
+
+.g{display:grid;gap:14px;margin-bottom:16px}.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+.stat small,.lbl{color:var(--mu);font-size:12px;font-weight:500}
+.stat b{display:block;font-size:27px;letter-spacing:-.02em;margin-top:2px}
+.btn{display:inline-flex;gap:7px;align-items:center;padding:8px 14px;border-radius:9px;border:1px solid var(--bd);background:var(--s2);cursor:pointer;font-weight:500;font-size:13px;white-space:nowrap}
+.btn:hover{border-color:#3a4857;background:#1b2530;transform:translateY(-1px)}
+.btn.p{background:linear-gradient(135deg,#34d399,#10b981);border-color:transparent;color:#04130d;font-weight:600;box-shadow:0 2px 8px #10b98133}
+.btn.p:hover{filter:brightness(1.08);box-shadow:0 4px 14px #10b98144}
+.btn.d{color:var(--rd);background:#f871711a;border-color:#f8717133}
+.btn.d:hover{background:#f871712a}
+.btn.wa{background:#25D366;color:#fff;border-color:transparent;font-weight:600}
+.btn.wa:hover{filter:brightness(1.08)}
+.btn.mic{background:#a78bfa1a;color:var(--pu);border-color:#a78bfa44;font-weight:600}
+.btn.mic:hover{background:#a78bfa2a}
+.btn.mic.listening{background:var(--rd);color:#fff;border-color:transparent;animation:micPulse 1.2s infinite ease-in-out}
+@keyframes micPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 #f8717166}50%{transform:scale(1.04);box-shadow:0 0 0 10px #f8717100}}
+
+.ib{border:0;background:none;color:var(--mu);padding:7px;border-radius:8px;cursor:pointer;display:grid;place-items:center}
+.ib:hover{background:var(--s2);color:var(--tx);transform:scale(1.08)}
+.ib.r:hover{color:var(--rd);background:#f871711a}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.sp{justify-content:space-between}.mb{margin-bottom:16px}
+.hero{background:linear-gradient(135deg,#0c3a2d,#0f1c28 75%);border-color:#1d4d3d}
+.hero .cell{background:#ffffff0d;border:1px solid #ffffff12;border-radius:11px;padding:12px}
+.hero .big{font-size:23px;font-weight:700;margin-top:3px;letter-spacing:-.02em}
+.hero input{background:transparent;border:0;border-bottom:1px solid #34d39966;border-radius:0;padding:2px 0;font-size:23px;font-weight:700;width:calc(100% - 20px)}
+.bar{height:6px;background:#ffffff14;border-radius:9px;overflow:hidden;margin-top:14px}.bar i{display:block;height:100%;background:linear-gradient(90deg,#34d399,#10b981);border-radius:9px;transition:width .5s var(--ease-spring)}
+.ch{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;background:var(--s2);font-weight:600}
+.pill{font-size:11px;font-weight:600;padding:2px 9px;border-radius:99px;background:#34d3991f;color:var(--ac)}
+.pill.r{background:#f871711f;color:var(--rd)}
+.pill.b{background:#60a5fa1f;color:var(--bl)}
+.cat{padding:0;overflow:hidden;margin-bottom:16px}
+.it{display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid var(--bd);transition:background 0.15s ease}
+.it:hover{background:#ffffff07}
+.it .n{flex:1;min-width:0}.it .n small{color:var(--mu);font-size:12px}
+.cb{appearance:none;-webkit-appearance:none;width:20px;height:20px;border-radius:6px;border:1.5px solid #3a4857;background:var(--s2);cursor:pointer;padding:0;display:grid;place-items:center;flex:none}
+.cb:checked{background:var(--ac);border-color:var(--ac);transform:scale(1.05)}.cb:checked::after{content:"✓";color:#04130d;font-size:13px;font-weight:700}
+.done{text-decoration:line-through;color:var(--mu);opacity:0.75}
+.amt{text-align:right;font-weight:700;color:var(--ac)}.amt small{display:block;color:var(--mu);font-weight:400;font-size:11px}
+.total{display:flex;justify-content:space-between;font-weight:700;font-size:17px;background:linear-gradient(135deg,#10b981,#059669);color:#04130d;border:0;box-shadow:0 4px 14px #10b98133}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--mu);text-align:left;padding:10px;border-bottom:1px solid var(--bd);white-space:nowrap}
+td{padding:7px 8px;border-bottom:1px solid var(--bd)}td.t{text-align:right;font-weight:700;white-space:nowrap}
+td input.nm{background:transparent;border-color:transparent;min-width:170px}td input.nm:hover, td input.nm:focus{border-color:var(--bd);background:var(--s2)}
+td .q{width:90px;text-align:center}td .u{width:68px}td .r{width:84px;text-align:right}
+.sum{margin-left:auto;width:280px;display:grid;gap:9px;margin-top:16px}.sum div{display:flex;justify-content:space-between;align-items:center}
+.sum .gt{font-size:19px;font-weight:700;color:var(--ac);border-top:1px solid var(--bd);padding-top:10px}
+.sum input{width:100px;text-align:right}
+.bc{margin-bottom:12px}.bc .hd{display:flex;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.empty{text-align:center;color:var(--mu);padding:36px}
+.mini{border:1px solid var(--bd);border-radius:11px;padding:12px;background:var(--s2);transition:transform 0.2s var(--ease-spring)}
+.mini:hover{transform:translateY(-2px)}
+.mini b{display:block;font-size:19px;margin-top:2px}
+.snap{display:flex;align-items:center;gap:10px;padding:11px 0;border-top:1px solid var(--bd)}.snap div{flex:1;min-width:0}.snap small{color:var(--mu)}
+
+.modal{position:fixed;inset:0;background:#000000a0;backdrop-filter:blur(8px);display:grid;place-items:center;padding:16px;z-index:60;opacity:0;pointer-events:none;transition:opacity 0.25s var(--ease-spring)}
+.modal.show{opacity:1;pointer-events:auto}
+.modal .card{width:100%;max-width:440px;box-shadow:0 24px 60px #00000088;transform:scale(0.92) translateY(20px);transition:transform 0.3s var(--ease-spring);max-height:90vh;overflow-y:auto}
+.modal.show .card{transform:scale(1) translateY(0)}
+.f{display:grid;gap:5px;margin-bottom:12px}
+
+.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px) scale(0.95);background:#1b2530f2;backdrop-filter:blur(10px);border:1px solid #2c3a49;color:#fff;padding:11px 20px;border-radius:12px;opacity:0;pointer-events:none;transition:all 0.3s var(--ease-spring);z-index:99;box-shadow:0 12px 30px #00000066;font-weight:500}
+.toast.s{opacity:1;transform:translate(-50%,0) scale(1)}
+
+/* TAB TRANSITION */
+.tab {
+  display: none;
+  opacity: 0;
+  transform: translateY(14px);
+  will-change: transform, opacity;
+}
+.tab.on {
+  display: block;
+  animation: tabFadeIn 0.35s var(--ease-spring) forwards;
+}
+@keyframes tabFadeIn {
+  0% { opacity: 0; transform: translateY(14px) scale(0.99); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.tab.on > .card, .tab.on > .g, .tab.on > #cats > .card {
+  animation: itemSlideUp 0.4s var(--ease-spring) backwards;
+}
+.tab.on > *:nth-child(1) { animation-delay: 0.04s; }
+.tab.on > *:nth-child(2) { animation-delay: 0.08s; }
+.tab.on > *:nth-child(3) { animation-delay: 0.12s; }
+.tab.on > *:nth-child(4) { animation-delay: 0.16s; }
+
+@keyframes itemSlideUp {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.bnav{display:none;position:fixed;bottom:0;left:0;right:0;background:#0f151ce6;backdrop-filter:blur(12px);border-top:1px solid var(--bd);z-index:50;padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
+.bnav .nb{transition:transform 0.2s var(--ease-spring), color 0.2s ease}
+.bnav .nb:active{transform:scale(0.9)}
+
+/* KHATA STYLING */
+.kh-card{border:1px solid var(--bd);background:var(--s2);border-radius:12px;padding:14px;margin-bottom:12px;transition:all 0.2s var(--ease-spring)}
+.kh-card:hover{border-color:#3a4857;transform:translateY(-1px)}
+.kh-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:8px;flex-wrap:wrap}
+.kh-name{font-size:16px;font-weight:700}
+.kh-phone{font-size:12px;color:var(--mu)}
+.kh-due{font-size:19px;font-weight:700;color:var(--rd)}
+.kh-due.settled{color:var(--ac)}
+.kh-meta{font-size:11px;color:var(--mu);margin-top:2px}
+.kh-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;border-top:1px solid var(--bd);padding-top:10px}
+
+/* TIMELINE ENTRY STYLING */
+.tl-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--bd)}
+.tl-badge{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-size:12px;flex:none;font-weight:700}
+.tl-badge.cr{background:var(--rd-glow);color:var(--rd);border:1px solid #f8717144}
+.tl-badge.pm{background:var(--ac-glow);color:var(--ac);border:1px solid #34d39944}
+.tl-body{flex:1;min-width:0}
+.tl-dt{font-size:11px;color:var(--mu);margin-top:2px}
+.tl-amt{text-align:right;font-weight:700}
+.tl-amt.cr{color:var(--rd)}
+.tl-amt.pm{color:var(--ac)}
+
+/* HIGHLIGHT ROW WHEN ADDED BY VOICE */
+@keyframes rowFlash{0%{background:#a78bfa33}100%{background:transparent}}
+.row-added{animation:rowFlash 1.5s var(--ease-spring)}
+
+@media(max-width:860px){
+  .side{display:none}
+  .main{margin:0;padding:18px 14px 96px}
+  .bnav{display:flex}
+  .bnav .nb{flex-direction:column;gap:3px;font-size:10px;margin:0;padding:5px 2px;box-shadow:none!important}
+  .bnav .nb.on{background:transparent;color:var(--ac)}
+  .bnav .nb.on svg{transform:scale(1.15);stroke-width:2.2}
+  .g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:1fr}.stats.g3{grid-template-columns:repeat(3,1fr)}.sum{width:100%}.it{padding:11px 12px}
+  input,select{font-size:16px;min-height:44px}.btn{min-height:44px;padding:9px 14px}.ib{padding:11px}
+  .top{position:sticky;top:0;z-index:40;background:#090d12e6;backdrop-filter:blur(12px);margin:-18px -14px 16px;padding:calc(12px + env(safe-area-inset-top)) 14px 12px}.top h1{font-size:20px}
+  .main{padding-top:0}body.bt .main{padding-bottom:170px}
+  #bill .tw table,#bill .tw tbody{display:block}#bill .tw thead{display:none}
+  #bBody tr{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px;margin-bottom:10px;background:var(--s2);border:1px solid var(--bd);border-radius:12px;transition:transform 0.2s var(--ease-spring)}
+  #bBody tr:focus-within{border-color:var(--ac);box-shadow:0 0 0 1px var(--ac)}
+  #bBody td{border:0;padding:0}#bBody td:first-child{grid-column:1/3}
+  #bBody td:first-child input{background:var(--s1);border-color:var(--bd);min-width:0;font-weight:600}
+  #bBody .q{width:100%;flex:1}#bBody .u{width:78px}#bBody .r{width:100%;text-align:left}
+  #bBody td.t{text-align:left;align-self:center;font-size:18px;color:var(--ac)}#bBody td:last-child{text-align:right}
+  #bBody td[data-l]::before{content:attr(data-l);display:block;color:var(--mu);font-size:11px;font-weight:500;margin-bottom:3px}
+  .modal{align-items:end;padding:0}
+  .modal .card{max-width:none;border-radius:20px 20px 0 0;padding-bottom:calc(18px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform 0.35s var(--ease-spring)}
+  .modal.show .card{transform:translateY(0)}
+  body.bt .mbar{display:flex;position:fixed;left:10px;right:10px;bottom:calc(68px + env(safe-area-inset-bottom));z-index:45;background:#151d26f0;border:1px solid var(--bd);border-radius:14px;padding:10px 14px;justify-content:space-between;align-items:center;backdrop-filter:blur(12px);box-shadow:0 8px 24px #00000055;animation:slideMbar 0.3s var(--ease-spring)}
+  @keyframes slideMbar{0%{transform:translateY(30px);opacity:0}100%{transform:translateY(0);opacity:1}}
+  .mbar b{display:block;font-size:20px;color:var(--ac)}
+}
+@media print{
+  body *{visibility:hidden}.pa,.pa *{visibility:visible}
+  .pa{position:absolute;left:0;top:0;width:100%;background:#fff!important;color:#000!important;border:0!important;padding:16px!important}
+  .pa *{color:#000!important;background:transparent!important;border-color:#ccc!important;box-shadow:none!important}
+  .pa input,.pa select{border:0!important;appearance:none;-webkit-appearance:none}.pa .cb{border:1px solid #999!important}
+  .np{display:none!important}
+}
+</style>
+</head>
+<body>
+<aside class="side">
+  <div class="brand"><div class="logo">🥦</div><div><b>Exotic Veggies</b><small>Stock &amp; Billing · v5.6</small></div></div>
+  <nav id="nav"></nav>
+  <div class="sf"><span class="dot"></span><span id="savedTxt">Auto-save on</span></div>
+</aside>
+<nav class="bnav" id="bnav"></nav>
+
+<div class="main">
+  <header class="top np"><h1 id="title"></h1><input type="date" id="gdate" onchange="setDay(this.value)"></header>
+
+  <!-- 1. STOCK TAB -->
+  <section class="tab on" id="tab-stock">
+    <div class="g g3 stats">
+      <div class="card stat"><small>Total Items</small><b id="sT"></b></div>
+      <div class="card stat"><small>Received</small><b id="sR" style="color:var(--bl)"></b></div>
+      <div class="card stat"><small>Pending</small><b id="sP" style="color:var(--am)"></b></div>
+    </div>
+    <div class="card hero mb">
+      <div class="row sp" style="margin-bottom:12px"><b>Cash Budget</b><span class="pill">Daily Ledger</span></div>
+      <div class="g g3" style="margin:0">
+        <div class="cell"><small class="lbl">Starting budget (editable)</small><div class="big">₹<input type="number" id="budget" onchange="setBudget()"></div></div>
+        <div class="cell"><small class="lbl">Spent (received stock)</small><div class="big" id="spent"></div></div>
+        <div class="cell"><small class="lbl">Rupees left</small><div class="big" id="left"></div></div>
+      </div>
+      <div class="bar"><i id="pbar"></i></div>
+    </div>
+    <div class="card row sp mb np">
+      <button class="btn p" onclick="openModal()" data-ic="plus">Add Item</button>
+      <div class="row">
+        <button class="btn" onclick="freshDay()" data-ic="refresh">Fresh Day</button>
+        <button class="btn" onclick="dlStock()" data-ic="dl">Download TXT</button>
+        <button class="btn" onclick="stockJpeg()" data-ic="dl">JPEG</button>
+        <button class="btn" onclick="printEl($('tab-stock'))" data-ic="print">Print</button>
+      </div>
+    </div>
+    <div id="cats"></div>
+    <div class="card total"><span>Stock Grand Total</span><span id="gTotal"></span></div>
+  </section>
+
+  <!-- 2. BILLING TAB -->
+  <section class="tab" id="tab-billing">
+    <div class="card" id="bill">
+      <div class="row sp mb">
+        <div><b style="font-size:18px">Customer Invoice</b><div class="lbl">Exotic Veggies · <span id="billDate"></span></div></div>
+        <div class="row np">
+          <button class="btn mic" id="btnVoice" onclick="toggleVoiceBilling()" data-ic="mic">Voice Add</button>
+          <button class="btn" onclick="toggleLang()" data-ic="globe" id="btnLang">हिंदी / English</button>
+          <button class="btn p" onclick="addRow()" data-ic="plus">Add Item</button>
+        </div>
+      </div>
+      <div class="g g2">
+        <div class="f" style="margin:0"><label class="lbl">Customer name</label><input id="cName" placeholder="Enter customer name (or speak 'Grahak Mahadev mama')"></div>
+        <div class="f" style="margin:0"><label class="lbl">Phone number</label><input id="cPhone" type="tel" placeholder="Enter mobile number"></div>
+      </div>
+      <div class="f" style="margin:12px 0 16px">
+        <label class="lbl">Payment Type</label>
+        <select id="bPayType" style="font-weight:600">
+          <option value="cash">Paid immediately (Cash / UPI)</option>
+          <option value="credit">Credit / Udhari (Add to Customer Khata)</option>
+        </select>
+      </div>
+      <div class="tw"><table>
+        <thead><tr><th>Item</th><th>Qty / Weight</th><th>₹ / unit</th><th style="text-align:right">Total</th><th class="np"></th></tr></thead>
+        <tbody id="bBody"></tbody>
+      </table></div>
+      <div class="sum">
+        <div><span class="lbl">Subtotal</span><b id="bSub"></b></div>
+        <div><span class="lbl">Discount / Adj. (₹)</span><input type="number" id="bDisc" value="0" oninput="calc()"></div>
+        <div class="gt"><span>Grand Total</span><span id="bGrand"></span></div>
+      </div>
+      <div class="row np" style="justify-content:flex-end;margin-top:20px;gap:8px">
+        <button class="btn" onclick="clearBill()" data-ic="refresh">Clear</button>
+        <button class="btn wa" onclick="shareBillToWhatsApp()">WhatsApp JPEG</button>
+        <button class="btn p" onclick="saveBill()" data-ic="print">Save &amp; Print Bill</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. KHATA / UDHARI LEDGER TAB -->
+  <section class="tab" id="tab-khata">
+    <div class="g g3 stats">
+      <div class="card stat"><small>Total Credit (उधारी)</small><b id="kTotalCredit" style="color:var(--rd)">₹0.00</b></div>
+      <div class="card stat"><small>Total Received (जमा)</small><b id="kTotalPaid" style="color:var(--ac)">₹0.00</b></div>
+      <div class="card stat"><small>Net Pending Balance</small><b id="kNetDue" style="color:var(--am)">₹0.00</b></div>
+    </div>
+
+    <div class="card mb row sp">
+      <div><b>Customer Udhar Ledger</b><div class="lbl">Track pending balances, exact date/time of debts, and recorded payments</div></div>
+      <div class="row">
+        <input id="kSearch" placeholder="Search customer / phone..." style="width:210px" oninput="renderKhata()">
+        <button class="btn p" onclick="openKhataModal()" data-ic="plus">Add Customer / Udhar</button>
+      </div>
+    </div>
+
+    <div id="kCustomerList"></div>
+  </section>
+
+  <!-- 4. HISTORY TAB -->
+  <section class="tab" id="tab-history">
+    <div class="card mb row sp">
+      <div><b>Transaction history</b><div class="lbl">Records for <span id="hLbl" style="color:var(--ac)"></span></div></div>
+      <input type="date" id="hdate" style="width:auto" onchange="setDay(this.value)">
+    </div>
+    <div class="g g4" id="hSnap"></div>
+    <div class="row sp mb"><b>Customer bills</b><button class="btn d" onclick="clearDayBills()" data-ic="trash">Clear this date's bills</button></div>
+    <div id="hBills"></div>
+  </section>
+
+  <!-- 5. STORAGE TAB -->
+  <section class="tab" id="tab-storage">
+    <div class="card mb">
+      <div class="row sp"><div class="row"><span class="dot"></span><div><b>Lifetime Financial &amp; Storage Overview</b><div class="lbl" id="stLast">Every change is saved in local device memory instantly.</div></div></div></div>
+      
+      <div class="lbl" style="margin-top:16px;text-transform:uppercase;letter-spacing:0.05em">System Data</div>
+      <div class="g g4" id="stStats" style="margin:8px 0 0"></div>
+      <div class="bar"><i id="stBar"></i></div>
+
+      <div class="lbl" style="margin-top:20px;text-transform:uppercase;letter-spacing:0.05em">Purchase &amp; Sales Summary (All Time)</div>
+      <div class="g g3" id="stFinance" style="margin:8px 0 0"></div>
+
+      <div class="lbl" style="margin-top:14px;text-transform:uppercase;letter-spacing:0.05em">Customer Purchase Behavior</div>
+      <div class="g g3" id="stCustMetrics" style="margin:8px 0 0"></div>
+    </div>
+
+    <div class="card mb">
+      <div class="row sp mb">
+        <div><b>Customer Purchase History</b><div class="lbl">Total amounts spent by each customer across all saved bills</div></div>
+      </div>
+      <div class="tw">
+        <table>
+          <thead>
+            <tr>
+              <th>Customer Name</th>
+              <th>Phone</th>
+              <th style="text-align:center">Bills / Visits</th>
+              <th style="text-align:right">Total Amount Spent</th>
+            </tr>
+          </thead>
+          <tbody id="stCustTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card mb">
+      <b>Backup &amp; restore</b><div class="lbl" style="margin:2px 0 14px">Export your data to disk or restore it anytime:</div>
+      <div class="row">
+        <button class="btn p" onclick="saveToDisk()" data-ic="save">Save backup (JPEG)</button>
+        <button class="btn" onclick="saveToDisk(1)" data-ic="save">JSON</button>
+        <button class="btn" onclick="pick('merge')" data-ic="ul">Import &amp; merge</button>
+        <button class="btn" onclick="pick('replace')" data-ic="ul">Import &amp; replace</button>
+        <input type="file" id="file" accept=".jpg,.jpeg,.json,image/jpeg,application/json" hidden onchange="importFile(this)">
+      </div>
+    </div>
+    <div class="card mb">
+      <div class="row sp"><div><b>Snapshots</b><div class="lbl">Named restore points stored inside the app.</div></div>
+        <div class="row"><input id="snapName" placeholder="Snapshot name" style="width:190px"><button class="btn p" onclick="makeSnap()" data-ic="plus">Create</button></div></div>
+      <div id="snaps" style="margin-top:10px"></div>
+    </div>
+    <div class="card" style="border-color:#f8717133">
+      <div class="row sp"><div><b style="color:var(--rd)">Danger zone</b><div class="lbl">Erase all data and snapshots from this device.</div></div>
+        <button class="btn d" onclick="eraseAll()" data-ic="trash">Erase this device</button></div>
+    </div>
+  </section>
+</div>
+
+<!-- STOCK MODAL -->
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="card">
+    <div class="row sp mb"><b id="mTitle" style="font-size:17px"></b><button class="ib" onclick="closeModal()" data-ic="x"></button></div>
+    <input type="hidden" id="mId">
+    <div class="f"><label class="lbl">Item name</label><input id="mName"></div>
+    <div class="f"><label class="lbl">Category</label><select id="mCat"><option>Regular Maal</option><option>Extra Maal</option><option>Transport &amp; Expenses</option></select></div>
+    <div class="g g2" style="margin:0 0 16px"><div class="f" style="margin:0"><label class="lbl">Quantity / unit</label><input id="mQty" placeholder="e.g. 5 kg"></div>
+    <div class="f" style="margin:0"><label class="lbl">Estimated rate (₹)</label><input id="mRate" type="number"></div></div>
+    <div class="row" style="justify-content:flex-end"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn p" onclick="saveItem()">Save</button></div>
+  </div>
+</div>
+
+<!-- VOICE POPUP REVIEW MODAL -->
+<div class="modal" id="voiceReviewModal" onclick="if(event.target===this)closeVoiceReviewModal()">
+  <div class="card" style="max-width:540px">
+    <div class="row sp mb">
+      <div><b style="font-size:18px;color:var(--pu)">🎙️ Voice Items Preview</b><div class="lbl">Review every voice entry before adding to the bill</div></div>
+      <button class="ib" onclick="closeVoiceReviewModal()" data-ic="x"></button>
+    </div>
+    <div class="lbl" style="margin-bottom:8px">Customer Name: <b id="vrCustName" style="color:var(--ac)">Walk-in Customer</b></div>
+    <div class="tw" style="max-height:280px;overflow-y:auto;margin-bottom:12px;border:1px solid var(--bd);border-radius:10px">
+      <table>
+        <thead><tr><th>Item</th><th>Qty</th><th>Unit</th><th>Rate (₹)</th><th>Total</th><th></th></tr></thead>
+        <tbody id="vrBody"></tbody>
+      </table>
+    </div>
+    <div class="row sp" style="border-top:1px solid var(--bd);padding-top:12px">
+      <button class="btn d" onclick="discardVoiceItems()">Discard Voice Session</button>
+      <div class="row" style="gap:8px">
+        <button class="btn" onclick="resumeVoiceFromReview()">🎙️ Speak More</button>
+        <button class="btn p" onclick="applyVoiceItemsToBill()">Confirm &amp; Add to Bill</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- KHATA / UDHARI NEW ENTRY MODAL -->
+<div class="modal" id="khModal" onclick="if(event.target===this)closeKhataModal()">
+  <div class="card">
+    <div class="row sp mb"><b id="khModalTitle" style="font-size:17px">Add Udhar / Credit Entry</b><button class="ib" onclick="closeKhataModal()" data-ic="x"></button></div>
+    <input type="hidden" id="khCustKey">
+    <div class="f"><label class="lbl">Customer name</label><input id="khName" placeholder="e.g. Rahul Sharma / Cafe Green"></div>
+    <div class="f"><label class="lbl">Phone number</label><input id="khPhone" type="tel" placeholder="e.g. 9876543210"></div>
+    <div class="g g2" style="margin:0 0 12px">
+      <div class="f" style="margin:0"><label class="lbl">Transaction Type</label>
+        <select id="khType">
+          <option value="credit">Give Credit / Udhar (+ देय)</option>
+          <option value="payment">Receive Payment (- जमा)</option>
+        </select>
+      </div>
+      <div class="f" style="margin:0"><label class="lbl">Amount (₹)</label><input id="khAmount" type="number" min="0" placeholder="0.00"></div>
+    </div>
+    <div class="g g2" style="margin:0 0 12px">
+      <div class="f" style="margin:0"><label class="lbl">Date</label><input id="khDate" type="date"></div>
+      <div class="f" style="margin:0"><label class="lbl">Time</label><input id="khTime" type="time"></div>
+    </div>
+    <div class="f" style="margin:0 0 16px"><label class="lbl">Note / Veggies / Bill reference</label><input id="khNote" placeholder="e.g. Delivered 4kg Broccoli & Cherry Tomato"></div>
+    <div class="row" style="justify-content:flex-end"><button class="btn" onclick="closeKhataModal()">Cancel</button><button class="btn p" onclick="saveKhataEntry()">Save Entry</button></div>
+  </div>
+</div>
+
+<!-- KHATA STATEMENT DETAIL MODAL -->
+<div class="modal" id="khStmtModal" onclick="if(event.target===this)closeStmtModal()">
+  <div class="card" style="max-width:560px">
+    <div class="row sp mb">
+      <div><b id="stmtCustName" style="font-size:18px"></b><div class="lbl" id="stmtCustPhone"></div></div>
+      <button class="ib" onclick="closeStmtModal()" data-ic="x"></button>
+    </div>
+    <div class="card mb hero" style="padding:14px">
+      <div class="row sp"><div><small class="lbl">Current Due Balance</small><div class="big" id="stmtBalance" style="color:var(--rd)">₹0.00</div></div>
+      <button class="btn wa" id="stmtWaBtn">WhatsApp Statement</button></div>
+    </div>
+    <div class="lbl" style="margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em">Transaction Timeline (Date & Time Log)</div>
+    <div id="stmtTimeline" style="max-height:360px;overflow-y:auto;padding-right:4px"></div>
+    <div class="row sp" style="margin-top:16px;border-top:1px solid var(--bd);padding-top:12px">
+      <button class="btn d" id="stmtDelCustBtn">Delete Customer</button>
+      <div class="row"><button class="btn" onclick="closeStmtModal()">Close</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="mbar np">
+  <div><small class="lbl">Grand total</small><b id="mTot">₹0.00</b></div>
+  <div class="row" style="gap:8px">
+    <button class="btn wa" style="padding:8px 12px" onclick="shareBillToWhatsApp()">WhatsApp</button>
+    <button class="btn p" onclick="saveBill()">Save &amp; Print</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const K='exotic_veggies_v3_data',SK='exotic_veggies_v4_snaps',KK='exotic_veggies_v5_khata',mem={};
+const CAT={R:'Regular Maal',E:'Extra Maal',T:'Transport & Expenses'};
+const D_STOCK=[
+['Lettuce (लेट्यूस / सलाद पत्ता)','R','10 kg',120],['Zucchini Green (हरी जुकिनी)','R','8 kg',90],['Zucchini Yellow (पीली जुकिनी)','R','5 kg',110],
+['Broccoli (ब्रोकली)','R','12 kg',140],['Red Capsicum (लाल शिमला मिर्च)','R','15 kg',160],['Yellow Capsicum (पीली शिमला मिर्च)','R','15 kg',160],
+['Baby Corn (बेबी कॉर्न)','R','10 pkt',45],['Cherry Tomato (चेरी टमाटर)','R','8 kg',180],['Red Cabbage (लाल गोभी)','R','10 kg',80],
+['Button Mushroom (मशरूम)','R','20 pkt',50],['Peeled Garlic (लहसुन)','R','5 kg',220],['Celery (सेलेरी)','R','4 kg',90],['Parsley (पार्सले)','R','3 kg',100],
+['Chinese Cabbage (चाइनीज गोभी)','R','6 kg',70],['Iceberg Lettuce (आइसबर्ग लेट्यूस)','R','10 kg',130],
+['Avocado (एवोकैडो)','E','4 kg',350],['Asparagus (एस्पैरागस)','E','2 kg',600],['Basil Leaves (तुलसी / बेसिल)','E','2 kg',150],
+['Mandi Transport & Fare (भाड़ा)','T','1 trip',850]];
+
+const D_BILL=[
+  { hi: 'लेट्यूस (सलाद पत्ता)', en: 'Lettuce Salad Leaf', rate: 120, unit: 'kg' },
+  { hi: 'हरी / पीली जुकिनी', en: 'Zucchini Green / Yellow', rate: 100, unit: 'kg' },
+  { hi: 'ब्रोकली', en: 'Broccoli', rate: 140, unit: 'kg' },
+  { hi: 'लाल / पीली शिमला मिर्च', en: 'Red / Yellow Capsicum', rate: 160, unit: 'kg' },
+  { hi: 'बेबी कॉर्न', en: 'Baby Corn', rate: 45, unit: 'pkt' },
+  { hi: 'चेरी टमाटर', en: 'Cherry Tomato', rate: 180, unit: 'kg' },
+  { hi: 'लाल गोभी', en: 'Red Cabbage', rate: 80, unit: 'kg' },
+  { hi: 'बटन मशरूम', en: 'Button Mushroom', rate: 50, unit: 'pkt' },
+  { hi: 'छिला लहसुन', en: 'Peeled Garlic', rate: 220, unit: 'kg' }
+];
+
+// Complete Voice Mandi Keyword Registry
+const VOICE_CATALOG=[
+  { id:'lettuce', keys:['latest','letis','lettuce','salad patta','salad leaf','iceberg'], en:'Lettuce Salad Leaf', hi:'लेट्यूस (सलाद पत्ता)', rate:120, defUnit:'kg' },
+  { id:'capsicum', keys:['lal pila','lal peela','lal pili','red yellow','yellow red','capsicum','shimla','bell pepper','red capsicum','yellow capsicum'], en:'Red / Yellow Capsicum', hi:'लाल / पीली शिमला मिर्च', rate:160, defUnit:'kg' },
+  { id:'mushroom', keys:['mushroom','mashrum','button mushroom','button'], en:'Button Mushroom', hi:'बटन मशरूम', rate:50, defUnit:'pkt' },
+  { id:'cherry', keys:['cherry tamatar','cherry tomato','cherry','chota tamatar'], en:'Cherry Tomato', hi:'चेरी टमाटर', rate:180, defUnit:'kg' },
+  { id:'babycorn', keys:['baby corn','babycorn','corn'], en:'Baby Corn', hi:'बेबी कॉर्न', rate:45, defUnit:'pkt' },
+  { id:'broccoli', keys:['broccoli','brokoli','brokli','hari gobi'], en:'Broccoli', hi:'ब्रोकली', rate:140, defUnit:'kg' },
+  { id:'zucchini', keys:['jugani','zucchini','jukini','zukini','green zucchini'], en:'Zucchini Green / Yellow', hi:'हरी / पीली जुकिनी', rate:100, defUnit:'kg' },
+  { id:'garlic', keys:['lahsun','lasun','garlic','chila lasun','chila lahsun'], en:'Peeled Garlic', hi:'छिला लहसुन', rate:220, defUnit:'kg' },
+  { id:'cabbage', keys:['red cabbage','lal gobi','cabbage'], en:'Red Cabbage', hi:'लाल गोभी', rate:80, defUnit:'kg' },
+  { id:'celery', keys:['celery','selery'], en:'Celery', hi:'सेलेरी', rate:90, defUnit:'kg' },
+  { id:'parsley', keys:['parsley','pasley'], en:'Parsley', hi:'पार्सले', rate:100, defUnit:'kg' },
+  { id:'avocado', keys:['avocado','evocado'], en:'Avocado', hi:'एवोकैडो', rate:350, defUnit:'pc' },
+  { id:'asparagus', keys:['asparagus','asparagas'], en:'Asparagus', hi:'एस्पैरागस', rate:600, defUnit:'kg' },
+  { id:'basil', keys:['basil','tulsi'], en:'Basil Leaves', hi:'तुलसी / बेसिल', rate:150, defUnit:'bunch' }
+];
+
+const NAV=[
+  ['stock','Stock List','box'],
+  ['billing','Customer Bill','receipt'],
+  ['khata','Khata / Udhari','book'],
+  ['history','History','clock'],
+  ['storage','Storage','db']
+];
+
+const P={
+  box:'M21 8l-9-5-9 5v8l9 5 9-5V8zM3 8l9 5 9-5M12 13v8',
+  receipt:'M6 2h12v20l-3-2-3 2-3-2-3 2zM9 7h6M9 11h6',
+  book:'M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5A2.5 2.5 0 0 0 6.5 22H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15zM8 7h8M8 11h6',
+  clock:'M12 7v5l3 2M12 3a9 9 0 100 18 9 9 0 000-18',
+  db:'M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3zM4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6',
+  plus:'M12 5v14M5 12h14',
+  trash:'M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3',
+  edit:'M4 20h4L19 9l-4-4L4 16zM13 7l4 4',
+  dl:'M12 3v12M7 10l5 5 5-5M5 21h14',
+  ul:'M12 15V3M7 8l5-5 5 5M5 21h14',
+  print:'M7 9V3h10v6M7 17H4v-7h16v7h-3M7 14h10v7H7z',
+  refresh:'M20 11a8 8 0 10-2 6M20 4v7h-7',
+  save:'M5 3h12l4 4v14H3V3zM7 3v6h8V3M7 21v-7h10v7',
+  x:'M6 6l12 12M18 6L6 18',
+  globe:'M12 3a9 9 0 100 18 9 9 0 000-18M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18',
+  mic:'M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3zM19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8'
+};
+
+const ic=(n,s=16)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${P[n]||P.box}"/></svg>`;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const inr=(n,d=0)=>'₹'+Number(n||0).toLocaleString('en-IN',{minimumFractionDigits:d,maximumFractionDigits:d||2});
+const num=q=>{const m=String(q||'').match(/[\d.]+/);return m?parseFloat(m[0]):1};
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const nowTime=()=>{const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
+const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return mem[k]??null}};
+const lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){mem[k]=v;toast('Storage fallback: keeping data in memory')}};
+
+let db={}, khata={}, day=today(), tab='stock', mode='merge', saved=null;
+let voiceSessionItems = [];
+
+let bill = {
+  isHindi: true,
+  items: D_BILL.map(b => ({ name: b.hi, qty: 0, unit: b.unit || 'kg', rate: b.rate }))
+};
+
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('s');clearTimeout(t.h);t.h=setTimeout(()=>t.classList.remove('s'),2800)}
+function save(){lsSet(K,JSON.stringify(db));saved=new Date();status()}
+function saveKhata(){lsSet(KK,JSON.stringify(khata));saved=new Date();status()}
+function ensure(d){if(!db[d]){db[d]={budget:19000,stock:D_STOCK.map((s,i)=>({id:String(i+1),name:s[0],category:CAT[s[1]],qty:s[2],rate:s[3],checked:false})),bills:[]};save()}}
+function dl(name,text,type='text/plain'){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function printEl(el){el.classList.add('pa');window.print();setTimeout(()=>el.classList.remove('pa'),500)}
+
+function init(){
+  try{db=JSON.parse(lsGet(K)||'{}')||{}}catch(e){db={}}
+  try{khata=JSON.parse(lsGet(KK)||'{}')||{}}catch(e){khata={}}
+  document.querySelectorAll('[data-ic]').forEach(e=>e.insertAdjacentHTML('afterbegin',ic(e.dataset.ic)));
+  setDay(day);go('stock');try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}backupNudge();
+}
+
+function setDay(d){
+  if(!d)return;day=d;$('gdate').value=d;$('hdate').value=d;ensure(d);
+  if($('billDate')) $('billDate').textContent = d;
+  renderStock();
+  if(tab==='history')renderHistory();
+}
+
+function go(k){
+  tab=k;
+  document.body.classList.toggle('bt',k==='billing');
+  
+  document.querySelectorAll('.tab').forEach(e=>{
+    if(e.id==='tab-'+k){
+      e.classList.remove('on');
+      void e.offsetWidth;
+      e.classList.add('on');
+    } else {
+      e.classList.remove('on');
+    }
+  });
+
+  const h=NAV.map(([id,l,i])=>`<button class="nb ${id===k?'on':''}" onclick="go('${id}')">${ic(i,18)}<span>${l}</span></button>`).join('');
+  $('nav').innerHTML=h;$('bnav').innerHTML=h;$('title').textContent=NAV.find(n=>n[0]===k)[1];
+  
+  if(k==='stock')renderStock();
+  if(k==='billing')renderBill();
+  if(k==='khata')renderKhata();
+  if(k==='history')renderHistory();
+  if(k==='storage')renderStorage();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+/* 1. STOCK LIST */
+function renderStock(){
+  const d=db[day],it=d.stock;let spent=0,tot=0;
+  it.forEach(i=>{const t=num(i.qty)*(+i.rate||0);tot+=t;if(i.checked)spent+=t});
+  const rec=it.filter(i=>i.checked).length,left=d.budget-spent;
+  $('sT').textContent=it.length;$('sR').textContent=rec;$('sP').textContent=it.length-rec;
+  $('budget').value=d.budget;$('spent').textContent=inr(spent);$('gTotal').textContent=inr(tot);
+  $('left').textContent=inr(left);$('left').style.color=left<0?'var(--rd)':'var(--ac)';
+  $('pbar').style.width=Math.min(100,d.budget>0?spent/d.budget*100:0)+'%';
+  const head={'Regular Maal':'📦 Regular Maal','Extra Maal':'⭐ Extra Maal','Transport & Expenses':'🚚 Transport & Expenses'};
+  $('cats').innerHTML=Object.values(CAT).map(c=>{
+    const l=it.filter(i=>i.category===c);if(!l.length)return'';
+    return`<div class="card cat"><div class="ch"><span>${head[c]}</span><span class="pill">${l.length} items</span></div>`+l.map(i=>{
+      const n=num(i.qty);return`<div class="it"><input type="checkbox" class="cb np" ${i.checked?'checked':''} onchange="tog('${i.id}')">
+      <div class="n"><div class="${i.checked?'done':''}" style="font-weight:600">${esc(i.name)}</div><small>Qty ${esc(i.qty||'-')} · Est. ₹${i.rate}</small></div>
+      <div class="amt">${inr(n*i.rate)}<small>${n} × ₹${i.rate}</small></div>
+      <button class="ib np" onclick="openModal('${i.id}')" title="Edit">${ic('edit')}</button><button class="ib r np" onclick="delItem('${i.id}')" title="Delete">${ic('trash')}</button></div>`}).join('')+'</div>'}).join('');
+}
+function tog(id){const i=db[day].stock.find(x=>x.id===id);if(i){i.checked=!i.checked;save();renderStock()}}
+function delItem(id){if(confirm('Delete this item from stock?')){db[day].stock=db[day].stock.filter(i=>i.id!==id);save();renderStock()}}
+function setBudget(){db[day].budget=Number($('budget').value)||0;save();renderStock()}
+function freshDay(){if(confirm('Reset all received checkmarks for this day? Items and rates stay.')){db[day].stock.forEach(i=>i.checked=false);save();renderStock()}}
+function dlStock(){
+  const d=db[day];let sp=0,gt=0;d.stock.forEach(i=>{const t=num(i.qty)*(+i.rate||0);gt+=t;if(i.checked)sp+=t});
+  let t=`EXOTIC VEGGIES - STOCK SUMMARY (${day})\n${'='.repeat(42)}\nStarting Budget: ₹${d.budget}\nTotal Spent: ₹${sp}\nRupees Left: ₹${d.budget-sp}\nStock Grand Total: ₹${gt}\n${'='.repeat(42)}\n\nITEMS LIST:\n`;
+  d.stock.forEach((i,n)=>t+=`${n+1}. [${i.checked?'RECEIVED':'PENDING'}] ${i.name} - Qty: ${i.qty} @ ₹${i.rate} = ₹${num(i.qty)*i.rate}\n`);
+  dl(`Stock_Summary_${day}.txt`,t);toast('Stock summary downloaded')
+}
+function openModal(id){
+  const i=id?db[day].stock.find(x=>x.id===id):null;
+  $('mTitle').textContent=i?'Edit stock item':'Add stock item';$('mId').value=i?i.id:'';$('mName').value=i?i.name:'';
+  $('mCat').value=i?i.category:'Regular Maal';$('mQty').value=i?i.qty:'';$('mRate').value=i?i.rate:'';$('modal').classList.add('show');$('mName').focus()
+}
+function closeModal(){$('modal').classList.remove('show')}
+function saveItem(){
+  const id=$('mId').value,name=$('mName').value.trim();if(!name)return toast('Please enter an item name');
+  const o={name,category:$('mCat').value,qty:$('mQty').value.trim(),rate:Number($('mRate').value)||0};
+  const it=id?Object.assign(db[day].stock.find(i=>i.id===id),o):{id:Date.now().toString(),...o,checked:false};
+  if(!id)db[day].stock.push(it);save();renderStock();closeModal()
+}
+
+/* 2. BILLING & VOICE CALCULATION */
+function rowTotal(i){
+  return (i.unit==='g' ? i.qty/1000 : i.qty) * (i.rate || 0);
+}
+
+function renderBill(){
+  if($('billDate')) $('billDate').textContent = day;
+  if($('btnLang')) $('btnLang').innerHTML = `${ic('globe')} <span>${bill.isHindi ? 'हिंदी' : 'English'}</span>`;
+
+  $('bBody').innerHTML = bill.items.map((i,n) => `<tr>
+    <td><input class="nm" id="bn${n}" value="${esc(i.name)}" onchange="bill.items[${n}].name=this.value"></td>
+    <td data-l="Qty / weight"><div class="row" style="flex-wrap:nowrap;gap:6px">
+      <input class="q" type="number" step="any" min="0" placeholder="0" value="${i.qty||''}" oninput="bill.items[${n}].qty=parseFloat(this.value)||0;calc()">
+      <select class="u" onchange="bill.items[${n}].unit=this.value;calc()">
+        <option value="kg" ${i.unit==='kg'?'selected':''}>kg</option>
+        <option value="g" ${i.unit==='g'?'selected':''}>g</option>
+        <option value="pkt" ${i.unit==='pkt'?'selected':''}>pkt</option>
+        <option value="bunch" ${i.unit==='bunch'?'selected':''}>bunch</option>
+        <option value="pc" ${i.unit==='pc'?'selected':''}>pc</option>
+      </select></div></td>
+    <td data-l="Rate (₹)"><input class="r" type="number" min="0" placeholder="0" value="${i.rate||''}" oninput="bill.items[${n}].rate=parseFloat(this.value)||0;calc()"></td>
+    <td class="t" id="rt${n}" data-l="Total"></td>
+    <td class="np" style="white-space:nowrap">
+      <button class="ib" onclick="$('bn${n}').focus();$('bn${n}').select()" title="Edit name">${ic('edit')}</button>
+      <button class="ib r" onclick="bill.items.splice(${n},1);renderBill()" title="Remove">${ic('trash')}</button>
+    </td></tr>`).join('');
+  calc();
+}
+
+function calc(){
+  let s=0;bill.items.forEach((i,n)=>{const t=rowTotal(i);s+=t;const e=$('rt'+n);if(e)e.textContent=inr(t,2)});
+  const d=parseFloat($('bDisc').value)||0;$('bSub').textContent=inr(s,2);$('bGrand').textContent=$('mTot').textContent=inr(Math.max(0,s-d),2)
+}
+
+function addRow(){
+  bill.items.push({name: bill.isHindi ? 'नई सब्जी' : 'New Veggie Item', qty: 0, unit: 'kg', rate: 0});
+  renderBill();
+}
+
+function toggleLang(){
+  bill.isHindi = !bill.isHindi;
+  const targetKey = bill.isHindi ? 'hi' : 'en';
+  const sourceKey = bill.isHindi ? 'en' : 'hi';
+
+  bill.items.forEach(item => {
+    const found = D_BILL.find(b => b[sourceKey] === item.name || b[targetKey] === item.name);
+    if(found) {
+      item.name = found[targetKey];
+    } else if(item.name === 'New Veggie Item') {
+      item.name = 'नई सब्जी';
+    } else if(item.name === 'नई सब्जी') {
+      item.name = 'New Veggie Item';
+    }
+  });
+
+  renderBill();
+  toast(bill.isHindi ? 'Vegetable names: हिंदी' : 'Vegetable names: English');
+}
+
+/* ==========================================================
+   TRAINED CONTINUOUS STREAM PARSER (ENTIRE BILL IN ONE GO)
+   ========================================================== */
+function parseMandiFullStream(rawText){
+  let text = rawText.toLowerCase().replace(/,/g, ' ').replace(/rs\.?|rupees?/gi, ' ');
+
+  // 1. Extract Customer Name (e.g. "Grahak Mahadev mama", "Customer name Mahadev mama")
+  const custMatch = text.match(/(?:grahak\s+ka\s+naam|grahak\s+naam|grahak|customer\s+name|add\s+customer\s+name|customer)\s+([a-z\s]+?)(?=\d|latest|lal|mushroom|broccoli|jugani|baby|lahsun|cherry|$)/i);
+  if(custMatch && custMatch[1]){
+    const rawName = custMatch[1].trim();
+    if(rawName.length > 1){
+      const formattedName = rawName.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      $('cName').value = formattedName;
+      toast(`👤 Customer identified: ${formattedName}`);
+      text = text.slice(0, custMatch.index) + ' ' + text.slice(custMatch.index + custMatch[0].length);
+    }
+  }
+
+  // 2. Find all matching vegetable tokens
+  let itemMatches = [];
+  for(const item of VOICE_CATALOG){
+    for(const k of item.keys){
+      const pattern = new RegExp('\\b' + k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'ig');
+      let m;
+      while((m = pattern.exec(text)) !== null){
+        itemMatches.push({ start: m.index, end: m.index + m[0].length, item, key: k });
+      }
+    }
+  }
+
+  if(!itemMatches.length) return [];
+
+  // Sort and remove overlapping item matches
+  itemMatches.sort((a,b) => a.start - b.start);
+  let cleanItems = [];
+  let lastEnd = -1;
+  for(const im of itemMatches){
+    if(im.start >= lastEnd){
+      cleanItems.push(im);
+      lastEnd = im.end;
+    }
+  }
+
+  // 3. Extract all Rate and Qty specifier tokens across the whole text
+  let specifiers = [];
+
+  // Rate patterns: "120 ke bhav ka", "45 ke bhav", "rate 140", "120 ka", "90 rupaye ka"
+  const ratePatterns = [
+    { regex: /(\d+)\s*(?:rupaye|rs|rupya|rupee)?\s*(?:ke\s+bhav\s+ka|ke\s+bhav\s+se|bhav\s+ka|bhav\s+se|bhav)\b/gi, type: 'rate' },
+    { regex: /(?:rate|bhav|at|price)\s*[:=]?\s*(\d+)\b/gi, type: 'rate' },
+    { regex: /(\d+)\s*(?:rupaye|rs|rupya)?\s*ka\b/gi, type: 'rate' }
+  ];
+  for(const rp of ratePatterns){
+    let m;
+    while((m = rp.regex.exec(text)) !== null){
+      specifiers.push({ start: m.index, end: m.index + m[0].length, type: 'rate', val: parseFloat(m[1]), unit: null });
+    }
+  }
+
+  // Compound Quantity: "2 kilo 450 g" -> 2.45 kg
+  const compoundQtyRegex = /(\d+)\s*(?:kilo|kg)\s*(\d+)\s*(?:gram|g|gm|gm\b|g\b)/gi;
+  let cm;
+  while((cm = compoundQtyRegex.exec(text)) !== null){
+    const kilo = parseFloat(cm[1]);
+    const gram = parseFloat(cm[2]);
+    specifiers.push({ start: cm.index, end: cm.index + cm[0].length, type: 'qty', val: kilo + (gram / 1000.0), unit: 'kg' });
+  }
+
+  // Simple Quantity with Unit
+  const qtyPatterns = [
+    { regex: /(\d+(?:\.\d+)?)\s*(?:pack|packet|pkt|pouch|box)\b/gi, unit: 'pkt' },
+    { regex: /(\d+(?:\.\d+)?)\s*(?:bunch|gaddi)\b/gi, unit: 'bunch' },
+    { regex: /(\d+(?:\.\d+)?)\s*(?:piece|pc|nag)\b/gi, unit: 'pc' },
+    { regex: /(\d+(?:\.\d+)?)\s*(?:gram|gm|g)\b/gi, unit: 'g' },
+    { regex: /(\d+(?:\.\d+)?)\s*(?:kilo|kg)\b/gi, unit: 'kg' }
+  ];
+  for(const qp of qtyPatterns){
+    let m;
+    while((m = qp.regex.exec(text)) !== null){
+      specifiers.push({ start: m.index, end: m.index + m[0].length, type: 'qty', val: parseFloat(m[1]), unit: qp.unit });
+    }
+  }
+
+  // Colloquial Quantities
+  const colloquialList = [
+    { regex: /\badha\s+kilo\b|\bhalf\s+kg\b|\badha\b/gi, val: 0.5, unit: 'kg' },
+    { regex: /\bpaav\s+kilo\b|\bdhai\s+sau\s+gram\b|\bdhai\s+sau\b|\bpaav\b/gi, val: 250.0, unit: 'g' },
+    { regex: /\bdedh\s+kilo\b|\bone\s+and\s+half\b|\bdedh\b/gi, val: 1.5, unit: 'kg' },
+    { regex: /\bdhai\s+kilo\b|\bdhai\b/gi, val: 2.5, unit: 'kg' },
+    { regex: /\bsau\s+gram\b/gi, val: 100.0, unit: 'g' }
+  ];
+  for(const col of colloquialList){
+    let m;
+    while((m = col.regex.exec(text)) !== null){
+      specifiers.push({ start: m.index, end: m.index + m[0].length, type: 'qty', val: col.val, unit: col.unit });
+    }
+  }
+
+  // Filter overlapping specifier tokens
+  specifiers.sort((a,b) => a.start - b.start || (b.end - b.start) - (a.end - a.start));
+  let cleanSpecifiers = [];
+  let sLastEnd = -1;
+  for(const sp of specifiers){
+    if(sp.start >= sLastEnd){
+      cleanSpecifiers.push(sp);
+      sLastEnd = sp.end;
+    }
+  }
+
+  // 4. Associative Gap Assignment Algorithm
+  let assigned = cleanItems.map(ci => ({
+    item: ci.item,
+    rate: null,
+    qty: null,
+    unit: ci.item.defUnit || 'kg'
+  }));
+
+  // Tokens before Item 0
+  for(const t of cleanSpecifiers.filter(x => x.end <= cleanItems[0].start)){
+    if(t.type === 'rate') assigned[0].rate = t.val;
+    else if(t.type === 'qty'){ assigned[0].qty = t.val; assigned[0].unit = t.unit; }
+  }
+
+  // Gaps between Item i-1 and Item i
+  for(let i = 1; i < cleanItems.length; i++){
+    const prevIdx = i - 1;
+    const nextIdx = i;
+    const gapTokens = cleanSpecifiers.filter(x => x.start >= cleanItems[prevIdx].end && x.end <= cleanItems[nextIdx].start);
+
+    const prevHasRate = (assigned[prevIdx].rate !== null);
+    const prevHasQty = (assigned[prevIdx].qty !== null);
+
+    if(prevHasRate && prevHasQty){
+      // All tokens in gap belong to next item
+      for(const t of gapTokens){
+        if(t.type === 'rate' && assigned[nextIdx].rate === null) assigned[nextIdx].rate = t.val;
+        else if(t.type === 'qty' && assigned[nextIdx].qty === null){ assigned[nextIdx].qty = t.val; assigned[nextIdx].unit = t.unit; }
+      }
+    } else if(!prevHasRate && !prevHasQty){
+      // Gap must supply first token to prev item
+      if(gapTokens.length >= 1){
+        const t0 = gapTokens[0];
+        if(t0.type === 'rate') assigned[prevIdx].rate = t0.val;
+        else if(t0.type === 'qty'){ assigned[prevIdx].qty = t0.val; assigned[prevIdx].unit = t0.unit; }
+      }
+      for(let j = 1; j < gapTokens.length; j++){
+        const tj = gapTokens[j];
+        if(tj.type === 'rate' && assigned[nextIdx].rate === null) assigned[nextIdx].rate = tj.val;
+        else if(tj.type === 'qty' && assigned[nextIdx].qty === null){ assigned[nextIdx].qty = tj.val; assigned[nextIdx].unit = tj.unit; }
+      }
+    } else {
+      // Prev item needs either rate OR qty
+      let usedForPrev = false;
+      for(const t of gapTokens){
+        if(!usedForPrev){
+          if(!prevHasRate && t.type === 'rate'){ assigned[prevIdx].rate = t.val; usedForPrev = true; continue; }
+          else if(!prevHasQty && t.type === 'qty'){ assigned[prevIdx].qty = t.val; assigned[prevIdx].unit = t.unit; usedForPrev = true; continue; }
+        }
+        if(t.type === 'rate' && assigned[nextIdx].rate === null) assigned[nextIdx].rate = t.val;
+        else if(t.type === 'qty' && assigned[nextIdx].qty === null){ assigned[nextIdx].qty = t.val; assigned[nextIdx].unit = t.unit; }
+      }
+    }
+  }
+
+  // Tokens after Last Item
+  const lastIdx = cleanItems.length - 1;
+  for(const t of cleanSpecifiers.filter(x => x.start >= cleanItems[lastIdx].end)){
+    if(t.type === 'rate') assigned[lastIdx].rate = t.val;
+    else if(t.type === 'qty'){ assigned[lastIdx].qty = t.val; assigned[lastIdx].unit = t.unit; }
+  }
+
+  // 5. Convert to Session Items
+  return assigned.map(a => ({
+    enName: a.item.en,
+    hiName: a.item.hi,
+    displayName: bill.isHindi ? a.item.hi : a.item.en,
+    qty: (a.qty !== null ? a.qty : 1),
+    unit: (a.unit || a.item.defUnit || 'kg'),
+    rate: (a.rate !== null ? a.rate : a.item.rate)
+  }));
+}
+
+/* CONTINUOUS VOICE ENGINE WITH INSTANT AUTO-ACCUMULATION */
+let speechRecognizer = null;
+let isListening = false;
+let stopRequested = false;
+
+function toggleVoiceBilling(){
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    return toast('Voice input is not supported in this browser. Please use Google Chrome.');
+  }
+
+  if (isListening) {
+    stopVoiceSession();
+    return;
+  }
+
+  try {
+    speechRecognizer = new SpeechRecognition();
+    speechRecognizer.lang = 'en-IN';
+    speechRecognizer.continuous = true;
+    speechRecognizer.interimResults = false;
+    speechRecognizer.maxAlternatives = 1;
+    stopRequested = false;
+    voiceSessionItems = [];
+
+    speechRecognizer.onstart = () => {
+      isListening = true;
+      $('btnVoice').classList.add('listening');
+      $('btnVoice').innerHTML = `<span>🔴 Stop &amp; Review</span>`;
+      toast('🎙️ Continuous Voice ON: Dictate entire bill freely. Tap Stop or say "Khatam" to preview.');
+    };
+
+    speechRecognizer.onresult = (e) => {
+      // Accumulate all spoken speech into one unified transcript
+      let fullTranscript = '';
+      for(let i = 0; i < e.results.length; i++){
+        fullTranscript += ' ' + e.results[i][0].transcript;
+      }
+      fullTranscript = fullTranscript.toLowerCase().trim();
+
+      // Check if user spoke stop command
+      const lastPhrase = e.results[e.results.length - 1][0].transcript.toLowerCase();
+      if (/stop|done|finish|khatam|complete|bas/i.test(lastPhrase)) {
+        stopVoiceSession();
+        return;
+      }
+
+      // Parse the continuous stream
+      const parsedResults = parseMandiFullStream(fullTranscript);
+      if (parsedResults.length > 0) {
+        voiceSessionItems = parsedResults;
+        toast(`✅ Captured ${parsedResults.length} veggie items so far...`);
+      }
+    };
+
+    speechRecognizer.onerror = (e) => {
+      if (e.error === 'not-allowed') {
+        toast('Microphone access blocked. Please enable mic permissions.');
+      } else if (e.error !== 'no-speech') {
+        console.warn('Speech error:', e.error);
+      }
+    };
+
+    speechRecognizer.onend = () => {
+      if (!stopRequested && isListening) {
+        try { speechRecognizer.start(); } catch (err) {}
+      } else {
+        isListening = false;
+        $('btnVoice').classList.remove('listening');
+        $('btnVoice').innerHTML = `${ic('mic')} <span>Voice Add</span>`;
+      }
+    };
+
+    speechRecognizer.start();
+  } catch (err) {
+    toast('Error starting microphone');
+  }
+}
+
+function stopVoiceSession(){
+  stopRequested = true;
+  isListening = false;
+  if (speechRecognizer) {
+    try { speechRecognizer.stop(); } catch (e) {}
+  }
+  $('btnVoice').classList.remove('listening');
+  $('btnVoice').innerHTML = `${ic('mic')} <span>Voice Add</span>`;
+
+  if (voiceSessionItems.length > 0) {
+    openVoiceReviewModal();
+  } else {
+    toast('Voice input stopped. No items detected.');
+  }
+}
+
+/* VOICE REVIEW MODAL PREVIEW & EDIT */
+function openVoiceReviewModal(){
+  $('vrCustName').textContent = $('cName').value.trim() || 'Walk-in Customer';
+  renderVoiceReviewTable();
+  $('voiceReviewModal').classList.add('show');
+}
+
+function renderVoiceReviewTable(){
+  if (!voiceSessionItems.length) {
+    $('vrBody').innerHTML = `<tr><td colspan="6" style="text-align:center;padding:16px;color:var(--mu)">No items left in this session.</td></tr>`;
+    return;
+  }
+
+  $('vrBody').innerHTML = voiceSessionItems.map((item, idx) => {
+    const itemTotal = (item.unit === 'g' ? item.qty / 1000 : item.qty) * (item.rate || 0);
+    return `
+      <tr>
+        <td><b>${esc(item.displayName)}</b></td>
+        <td><input type="number" step="any" min="0" value="${item.qty}" style="width:70px;text-align:center" oninput="voiceSessionItems[${idx}].qty=parseFloat(this.value)||0;renderVoiceReviewTable()"></td>
+        <td>
+          <select style="width:74px" onchange="voiceSessionItems[${idx}].unit=this.value;renderVoiceReviewTable()">
+            <option value="kg" ${item.unit==='kg'?'selected':''}>kg</option>
+            <option value="g" ${item.unit==='g'?'selected':''}>g</option>
+            <option value="pkt" ${item.unit==='pkt'?'selected':''}>pkt</option>
+            <option value="bunch" ${item.unit==='bunch'?'selected':''}>bunch</option>
+            <option value="pc" ${item.unit==='pc'?'selected':''}>pc</option>
+          </select>
+        </td>
+        <td><input type="number" min="0" value="${item.rate}" style="width:76px;text-align:right" oninput="voiceSessionItems[${idx}].rate=parseFloat(this.value)||0;renderVoiceReviewTable()"></td>
+        <td style="text-align:right;font-weight:700;color:var(--ac)">${inr(itemTotal, 2)}</td>
+        <td><button class="ib r" onclick="voiceSessionItems.splice(${idx},1);renderVoiceReviewTable()" title="Remove">${ic('trash', 14)}</button></td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function closeVoiceReviewModal(){
+  $('voiceReviewModal').classList.remove('show');
+}
+
+function discardVoiceItems(){
+  voiceSessionItems = [];
+  closeVoiceReviewModal();
+  toast('Voice items discarded');
+}
+
+function resumeVoiceFromReview(){
+  closeVoiceReviewModal();
+  toggleVoiceBilling();
+}
+
+function applyVoiceItemsToBill(){
+  if (!voiceSessionItems.length) {
+    closeVoiceReviewModal();
+    return;
+  }
+
+  // Prepend or update items into the live customer bill
+  voiceSessionItems.forEach(vItem => {
+    const existing = bill.items.find(x => x.name === vItem.enName || x.name === vItem.hiName);
+    if (existing) {
+      existing.qty = vItem.qty;
+      existing.unit = vItem.unit;
+      existing.rate = vItem.rate;
+    } else {
+      bill.items.unshift({
+        name: bill.isHindi ? vItem.hiName : vItem.enName,
+        qty: vItem.qty,
+        unit: vItem.unit,
+        rate: vItem.rate
+      });
+    }
+  });
+
+  renderBill();
+  closeVoiceReviewModal();
+  voiceSessionItems = [];
+  toast('✅ Verified voice items added to customer bill!');
+
+  // Visual highlight animation
+  const firstRow = $('bBody').firstElementChild;
+  if (firstRow) {
+    firstRow.classList.remove('row-added');
+    void firstRow.offsetWidth;
+    firstRow.classList.add('row-added');
+  }
+}
+
+function clearBill(){
+  $('cName').value='';$('cPhone').value='';$('bDisc').value='0';$('bPayType').value='cash';
+  bill.items = D_BILL.map(b => ({
+    name: b[bill.isHindi ? 'hi' : 'en'],
+    qty: 0,
+    unit: b.unit || 'kg',
+    rate: b.rate
+  }));
+  renderBill();
+}
+
+function saveBill(){
+  const items=[];let sub=0;
+  bill.items.forEach(i=>{const t=rowTotal(i);if(t>0||i.qty>0){sub+=t;items.push({name:i.name,qty:i.qty,unit:i.unit,rate:i.rate,total:t})}});
+  if(!items.length)return toast('Add at least one item quantity first');
+  const disc=parseFloat($('bDisc').value)||0;
+  const custName=$('cName').value.trim()||'Walk-in Customer';
+  const custPhone=$('cPhone').value.trim()||'N/A';
+  const payType=$('bPayType').value;
+  const curTime = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  const grandTotal=Math.max(0,sub-disc);
+
+  const bl={
+    id:'BILL-'+Date.now(),
+    time:curTime,
+    dateStr:day,
+    custName,
+    custPhone,
+    paymentType:payType,
+    items,
+    subtotal:sub,
+    discount:disc,
+    grandTotal
+  };
+
+  db[day].bills.push(bl);
+  save();
+
+  if(payType === 'credit'){
+    recordKhataCredit(custName, custPhone, grandTotal, day, curTime, `Bill #${bl.id.slice(-6)}: ${items.map(x=>x.name).join(', ')}`);
+    toast('Bill saved & recorded to Customer Khata (उधारी)');
+  } else {
+    toast('Bill saved to history');
+  }
+
+  printEl($('bill'));
+}
+
+async function shareBillToWhatsApp(){
+  const items=[];let sub=0;
+  bill.items.forEach(i=>{const t=rowTotal(i);if(t>0||i.qty>0){sub+=t;items.push({name:i.name,qty:i.qty,unit:i.unit,rate:i.rate,total:t})}});
+  if(!items.length)return toast('Add at least one item quantity first');
+  const disc=parseFloat($('bDisc').value)||0;
+  const custName=$('cName').value.trim()||'Walk-in Customer';
+  const custPhone=$('cPhone').value.trim()||'N/A';
+  const payType=$('bPayType').value;
+  const grandTotal=Math.max(0,sub-disc);
+  const curTime = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  
+  const bl={id:'BILL-'+Date.now(),time:curTime,dateStr:day,custName,custPhone,paymentType:payType,items,subtotal:sub,discount:disc,grandTotal};
+  db[day].bills.push(bl);
+  save();
+
+  if(payType === 'credit'){
+    recordKhataCredit(custName, custPhone, grandTotal, day, curTime, `Bill #${bl.id.slice(-6)}`);
+  }
+
+  const blob = await docJpeg({
+    title: 'Customer Invoice' + (payType==='credit'?' (Credit / Udhar)':''),
+    meta: [
+      `Customer: ${custName}     Phone: ${custPhone}`,
+      `Date: ${day}     Time: ${curTime}     Payment: ${payType==='credit'?'Credit (Udhar)':'Paid Cash/UPI'}`
+    ],
+    cols: [
+      ['Item', 46],
+      ['Qty', 16],
+      ['Rate', 16, 1],
+      ['Total', 22, 1]
+    ],
+    rows: bl.items.map(i => [i.name, i.qty + ' ' + i.unit, '₹' + i.rate, inr(i.total, 2)]),
+    foot: [
+      ['Subtotal', inr(bl.subtotal, 2)],
+      ...(bl.discount > 0 ? [['Discount', '- ' + inr(bl.discount)]] : []),
+      ['Grand Total', inr(bl.grandTotal, 2)]
+    ]
+  });
+
+  const fileName = `Bill_${custName.replace(/\W+/g, '_')}_${day}.jpg`;
+  const file = new File([blob], fileName, { type: 'image/jpeg' });
+
+  const shareText = `Here is your invoice from Exotic Veggies for ₹${grandTotal.toFixed(2)}. ${payType==='credit'?'Payment Status: Marked as Credit/Udhar.':''} Thank you for shopping with us!`;
+
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({
+        files: [file],
+        title: `Invoice - ${custName}`,
+        text: shareText
+      });
+      toast('Bill shared successfully');
+      clearBill();
+    } catch (e) {
+      if (e.name !== 'AbortError') toast('Share cancelled or not supported');
+    }
+  } else {
+    dl(fileName, blob, 'image/jpeg');
+    toast('Invoice downloaded as JPEG.');
+  }
+}
+
+/* 3. KHATA / UDHARI ENGINE WITH EXACT DATE & TIME */
+function khKey(name, phone){
+  const cleanPhone = (phone && phone !== 'N/A') ? phone.replace(/\D/g,'') : '';
+  return cleanPhone.length >= 7 ? 'ph_' + cleanPhone : 'nm_' + (name||'Customer').toLowerCase().trim();
+}
+
+function recordKhataCredit(name, phone, amount, dStr, tStr, note=''){
+  const key = khKey(name, phone);
+  if(!khata[key]){
+    khata[key] = {
+      name: name || 'Customer',
+      phone: phone || 'N/A',
+      createdAt: (dStr || today()) + ' ' + (tStr || nowTime()),
+      entries: []
+    };
+  }
+  khata[key].entries.push({
+    id: 'KH-' + Date.now(),
+    type: 'credit',
+    amount: Number(amount) || 0,
+    date: dStr || today(),
+    time: tStr || nowTime(),
+    note: note || 'Veggies purchased on Udhar'
+  });
+  saveKhata();
+}
+
+function recordKhataPayment(name, phone, amount, dStr, tStr, note=''){
+  const key = khKey(name, phone);
+  if(!khata[key]){
+    khata[key] = {
+      name: name || 'Customer',
+      phone: phone || 'N/A',
+      createdAt: (dStr || today()) + ' ' + (tStr || nowTime()),
+      entries: []
+    };
+  }
+  khata[key].entries.push({
+    id: 'KH-' + Date.now(),
+    type: 'payment',
+    amount: Number(amount) || 0,
+    date: dStr || today(),
+    time: tStr || nowTime(),
+    note: note || 'Payment received'
+  });
+  saveKhata();
+}
+
+function getKhataCustomerSummary(cust){
+  let totalCredit = 0, totalPaid = 0;
+  (cust.entries || []).forEach(e => {
+    if(e.type === 'credit') totalCredit += Number(e.amount)||0;
+    if(e.type === 'payment') totalPaid += Number(e.amount)||0;
+  });
+  const balance = totalCredit - totalPaid;
+  return { totalCredit, totalPaid, balance };
+}
+
+function renderKhata(){
+  const query = ($('kSearch').value || '').toLowerCase().trim();
+  let overallCredit = 0, overallPaid = 0, overallDue = 0;
+
+  const list = Object.entries(khata).map(([k, c]) => {
+    const s = getKhataCustomerSummary(c);
+    overallCredit += s.totalCredit;
+    overallPaid += s.totalPaid;
+    if(s.balance > 0) overallDue += s.balance;
+    return { key: k, customer: c, summary: s };
+  });
+
+  $('kTotalCredit').textContent = inr(overallCredit, 2);
+  $('kTotalPaid').textContent = inr(overallPaid, 2);
+  $('kNetDue').textContent = inr(overallDue, 2);
+
+  const filtered = list.filter(item => {
+    if(!query) return true;
+    return item.customer.name.toLowerCase().includes(query) || (item.customer.phone && item.customer.phone.includes(query));
+  }).sort((a,b) => b.summary.balance - a.summary.balance);
+
+  if(!filtered.length){
+    $('kCustomerList').innerHTML = `<div class="card empty">${query ? 'No customer matches your search.' : 'No Udhari / Khata records yet. Click "Add Customer / Udhar" to start.'}</div>`;
+    return;
+  }
+
+  $('kCustomerList').innerHTML = filtered.map(item => {
+    const c = item.customer;
+    const s = item.summary;
+    const isSettled = s.balance <= 0;
+    const lastEntry = c.entries && c.entries.length ? c.entries[c.entries.length - 1] : null;
+    const lastActivity = lastEntry ? `Last activity: ${lastEntry.date} at ${lastEntry.time}` : 'No activity recorded';
+
+    return `
+      <div class="kh-card">
+        <div class="kh-header">
+          <div>
+            <div class="kh-name">${esc(c.name)}</div>
+            <div class="kh-phone">${esc(c.phone)}</div>
+            <div class="kh-meta">${lastActivity} · ${c.entries.length} transaction${c.entries.length>1?'s':''}</div>
+          </div>
+          <div style="text-align:right">
+            <span class="lbl">${isSettled ? 'Account Settled' : 'Pending Udhar'}</span>
+            <div class="kh-due ${isSettled ? 'settled' : ''}">${isSettled ? (s.balance < 0 ? 'Advance: ' + inr(Math.abs(s.balance), 2) : '₹0.00 Paid') : inr(s.balance, 2)}</div>
+          </div>
+        </div>
+
+        <div class="g g3" style="margin:10px 0;gap:8px">
+          <div class="mini" style="padding:8px 10px"><span class="lbl">Total Credit Given</span><b style="font-size:15px;color:var(--rd)">${inr(s.totalCredit, 2)}</b></div>
+          <div class="mini" style="padding:8px 10px"><span class="lbl">Total Received</span><b style="font-size:15px;color:var(--ac)">${inr(s.totalPaid, 2)}</b></div>
+          <div class="mini" style="padding:8px 10px"><span class="lbl">Pending Balance</span><b style="font-size:15px;color:${isSettled?'var(--ac)':'var(--am)'}">${inr(s.balance, 2)}</b></div>
+        </div>
+
+        <div class="kh-actions">
+          <button class="btn p" onclick="quickPayment('${item.key}')" style="background:linear-gradient(135deg,#34d399,#10b981);color:#04130d">Receive Payment</button>
+          <button class="btn" onclick="quickCredit('${item.key}')">+ Give Credit</button>
+          <button class="btn" onclick="openStmtModal('${item.key}')">View Statement</button>
+          ${s.balance > 0 ? `<button class="btn wa" onclick="sendKhataWhatsAppReminder('${item.key}')">Send WhatsApp Reminder</button>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openKhataModal(key=null, defaultType='credit'){
+  $('khCustKey').value = key || '';
+  $('khType').value = defaultType;
+  $('khAmount').value = '';
+  $('khDate').value = today();
+  $('khTime').value = nowTime();
+  $('khNote').value = '';
+
+  if(key && khata[key]){
+    $('khModalTitle').textContent = defaultType === 'payment' ? 'Receive Payment' : 'Add Credit / Udhar';
+    $('khName').value = khata[key].name;
+    $('khPhone').value = khata[key].phone !== 'N/A' ? khata[key].phone : '';
+    $('khName').disabled = true;
+    $('khPhone').disabled = true;
+  } else {
+    $('khModalTitle').textContent = 'New Customer / Udhar Entry';
+    $('khName').value = '';
+    $('khPhone').value = '';
+    $('khName').disabled = false;
+    $('khPhone').disabled = false;
+  }
+
+  $('khModal').classList.add('show');
+  if(!key) $('khName').focus(); else $('khAmount').focus();
+}
+
+function closeKhataModal(){
+  $('khModal').classList.remove('show');
+}
+
+function quickPayment(key){
+  openKhataModal(key, 'payment');
+}
+
+function quickCredit(key){
+  openKhataModal(key, 'credit');
+}
+
+function saveKhataEntry(){
+  const key = $('khCustKey').value;
+  const name = $('khName').value.trim();
+  const phone = $('khPhone').value.trim() || 'N/A';
+  const type = $('khType').value;
+  const amount = parseFloat($('khAmount').value) || 0;
+  const dateStr = $('khDate').value || today();
+  const timeStr = $('khTime').value || nowTime();
+  const note = $('khNote').value.trim();
+
+  if(!key && !name){
+    return toast('Please enter a customer name');
+  }
+  if(amount <= 0){
+    return toast('Please enter a valid amount greater than 0');
+  }
+
+  if(type === 'credit'){
+    recordKhataCredit(name, phone, amount, dateStr, timeStr, note);
+    toast('Credit (उधारी) recorded with date and time');
+  } else {
+    recordKhataPayment(name, phone, amount, dateStr, timeStr, note);
+    toast('Payment (जमा) recorded successfully');
+  }
+
+  closeKhataModal();
+  renderKhata();
+}
+
+/* 4. STATEMENT DETAIL MODAL */
+let activeStmtKey = null;
+
+function openStmtModal(key){
+  activeStmtKey = key;
+  const cust = khata[key];
+  if(!cust) return;
+
+  const s = getKhataCustomerSummary(cust);
+  $('stmtCustName').textContent = cust.name;
+  $('stmtCustPhone').textContent = (cust.phone && cust.phone!=='N/A') ? 'Phone: ' + cust.phone : 'No phone registered';
+  $('stmtBalance').textContent = s.balance > 0 ? inr(s.balance, 2) : (s.balance < 0 ? 'Advance: ' + inr(Math.abs(s.balance), 2) : '₹0.00 (Settled)');
+  $('stmtBalance').style.color = s.balance > 0 ? 'var(--rd)' : 'var(--ac)';
+
+  $('stmtWaBtn').style.display = s.balance > 0 ? 'inline-flex' : 'none';
+  $('stmtWaBtn').onclick = () => sendKhataWhatsAppReminder(key);
+
+  $('stmtDelCustBtn').onclick = () => {
+    if(confirm(`Delete ${cust.name}'s entire Khata record? This cannot be undone.`)){
+      delete khata[key];
+      saveKhata();
+      closeStmtModal();
+      renderKhata();
+      toast('Customer Khata record deleted');
+    }
+  };
+
+  const sortedEntries = [...(cust.entries || [])].reverse();
+
+  if(!sortedEntries.length){
+    $('stmtTimeline').innerHTML = `<div class="card empty" style="padding:20px">No transactions recorded yet.</div>`;
+  } else {
+    $('stmtTimeline').innerHTML = sortedEntries.map((e, idx) => {
+      const isCr = (e.type === 'credit');
+      return `
+        <div class="tl-item">
+          <div class="tl-badge ${isCr ? 'cr' : 'pm'}">${isCr ? 'DR' : 'CR'}</div>
+          <div class="tl-body">
+            <div style="font-weight:600">${esc(e.note || (isCr ? 'Credit Given' : 'Payment Received'))}</div>
+            <div class="tl-dt">📅 <b>${e.date}</b> &nbsp;·&nbsp; ⏰ <b>${e.time || '12:00'}</b></div>
+          </div>
+          <div style="text-align:right">
+            <div class="tl-amt ${isCr ? 'cr' : 'pm'}">${isCr ? '+' : '-'}${inr(e.amount, 2)}</div>
+            <button class="ib r" style="padding:2px;margin-top:2px" onclick="deleteKhataEntry('${key}', '${e.id}')" title="Delete entry">${ic('trash', 14)}</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  $('khStmtModal').classList.add('show');
+}
+
+function closeStmtModal(){
+  $('khStmtModal').classList.remove('show');
+  activeStmtKey = null;
+}
+
+function deleteKhataEntry(key, entryId){
+  if(confirm('Delete this transaction entry?')){
+    const cust = khata[key];
+    if(cust){
+      cust.entries = cust.entries.filter(e => e.id !== entryId);
+      saveKhata();
+      openStmtModal(key);
+      renderKhata();
+      toast('Transaction removed');
+    }
+  }
+}
+
+function sendKhataWhatsAppReminder(key){
+  const cust = khata[key];
+  if(!cust) return;
+  const s = getKhataCustomerSummary(cust);
+  if(s.balance <= 0) return toast('Customer has no pending balance');
+
+  const phone = (cust.phone && cust.phone !== 'N/A') ? cust.phone.replace(/\D/g, '') : '';
+  const message = `Namaste ${cust.name}, this is a gentle reminder from Exotic Veggies. Your current pending Udhari balance is ₹${s.balance.toFixed(2)}. Kindly arrange the payment at your convenience. Thank you!`;
+
+  if(phone.length >= 10){
+    const waUrl = `https://wa.me/91${phone.slice(-10)}?text=${encodeURIComponent(message)}`;
+    window.open(waUrl, '_blank');
+  } else {
+    if(navigator.share){
+      navigator.share({
+        title: `Payment Reminder - ${cust.name}`,
+        text: message
+      }).catch(()=>{});
+    } else {
+      navigator.clipboard.writeText(message);
+      toast('Reminder message copied to clipboard! Paste it into WhatsApp.');
+    }
+  }
+}
+
+/* 5. HISTORY */
+function renderHistory(){
+  $('hLbl').textContent=day;const d=db[day]||{budget:19000,stock:[],bills:[]};let sp=0;
+  d.stock.forEach(i=>{if(i.checked)sp+=num(i.qty)*(+i.rate||0)});
+  const sn=[['Stock items',d.stock.length,'var(--ac)'],['Received',d.stock.filter(i=>i.checked).length,'var(--bl)'],['Budget spent',inr(sp),'var(--am)'],['Bills issued',d.bills.length,'var(--pu)']];
+  $('hSnap').innerHTML=sn.map(s=>`<div class="card mini"><span class="lbl">${s[0]}</span><b style="color:${s[2]}">${s[1]}</b></div>`).join('');
+  if(!d.bills.length){$('hBills').innerHTML=`<div class="card empty">No customer bills recorded for ${day}.</div>`;return}
+  $('hBills').innerHTML=d.bills.map((b,n)=>[b,n]).reverse().map(([b,n])=>`<div class="card bc"><div class="hd"><div><b>${esc(b.custName)}</b> <span class="pill ${b.paymentType==='credit'?'r':'b'}">${b.paymentType==='credit'?'Credit / Udhar':'Paid Cash/UPI'}</span><div class="lbl">${esc(b.custPhone)} · ${esc(b.time||'')}</div></div>
+  <div style="text-align:right"><span class="pill" style="font-size:13px">${inr(b.grandTotal,2)}</span>${b.discount>0?`<div class="lbl">Discount ${inr(b.discount)}</div>`:''}</div></div>
+  <div class="tw"><table><thead><tr><th>Item</th><th>Qty</th><th>Rate</th><th style="text-align:right">Total</th></tr></thead><tbody>${b.items.map(i=>`<tr><td>${esc(i.name)}</td><td>${i.qty} ${i.unit}</td><td>₹${i.rate}</td><td class="t">${inr(i.total,2)}</td></tr>`).join('')}</tbody></table></div>
+  <div class="row" style="justify-content:flex-end;margin-top:8px"><button class="btn" onclick="billJpeg(${n})">${ic('dl')} JPEG</button>${navigator.canShare?`<button class="btn" onclick="billJpeg(${n},1)">${ic('ul')} Share</button>`:''}<button class="btn d" onclick="delBill(${n})">${ic('trash')} Delete</button></div></div>`).join('')
+}
+function delBill(n){if(confirm('Delete this bill record?')){db[day].bills.splice(n,1);save();renderHistory()}}
+function clearDayBills(){if(confirm(`Delete ALL bills recorded for ${day}?`)){db[day].bills=[];save();renderHistory()}}
+
+/* 6. STORAGE */
+const snaps=()=>{try{return JSON.parse(lsGet(SK)||'[]')}catch(e){return[]}};
+function renderStorage(){
+  const raw=lsGet(K)||'',sn=snaps(),khRaw=lsGet(KK)||'';
+  const len=raw.length+(lsGet(SK)||'').length+khRaw.length;
+  
+  let totalPurchasedSpent = 0;
+  let totalSalesRevenue = 0;
+  let totalBillsCount = 0;
+  const customerMap = {};
+
+  Object.values(db).forEach(d => {
+    (d.stock || []).forEach(item => {
+      if (item.checked) {
+        totalPurchasedSpent += num(item.qty) * (+item.rate || 0);
+      }
+    });
+
+    (d.bills || []).forEach(billItem => {
+      totalBillsCount++;
+      const billTotal = Number(billItem.grandTotal) || 0;
+      totalSalesRevenue += billTotal;
+
+      const key = (billItem.custPhone && billItem.custPhone !== 'N/A') 
+        ? billItem.custPhone 
+        : billItem.custName;
+
+      if (!customerMap[key]) {
+        customerMap[key] = {
+          name: billItem.custName || 'Walk-in Customer',
+          phone: billItem.custPhone || 'N/A',
+          totalSpent: 0,
+          orders: 0
+        };
+      }
+      customerMap[key].totalSpent += billTotal;
+      customerMap[key].orders += 1;
+    });
+  });
+
+  const uniqueCustomersCount = Object.keys(customerMap).length;
+  const avgBillValue = totalBillsCount > 0 ? (totalSalesRevenue / totalBillsCount) : 0;
+  const netBalance = totalSalesRevenue - totalPurchasedSpent;
+
+  $('stLast').textContent = 'Every change is saved on this phone instantly. ' + 
+    (+lsGet('ev_lastbk') ? 'Last backup: ' + new Date(+lsGet('ev_lastbk')).toLocaleDateString() : 'No backup file saved yet.');
+
+  $('stStats').innerHTML = [
+    ['Days Stored', Object.keys(db).length, 'var(--tx)'],
+    ['Total Bills Saved', totalBillsCount, 'var(--tx)'],
+    ['Snapshots', sn.length, 'var(--tx)'],
+    ['Storage Used', (len / 1024).toFixed(1) + ' KB', 'var(--tx)']
+  ].map(s => `<div class="mini"><span class="lbl">${s[0]}</span><b style="color:${s[2]}">${s[1]}</b></div>`).join('');
+  
+  $('stBar').style.width = Math.max(1, Math.min(100, len / 5e4)) + '%';
+
+  $('stFinance').innerHTML = [
+    ['Total Spent on Purchases', inr(totalPurchasedSpent, 2), 'var(--rd)'],
+    ['Total Customer Sales', inr(totalSalesRevenue, 2), 'var(--ac)'],
+    ['Net Inflow (Sales - Stock)', inr(netBalance, 2), netBalance >= 0 ? 'var(--ac)' : 'var(--rd)']
+  ].map(s => `<div class="mini"><span class="lbl">${s[0]}</span><b style="color:${s[2]}">${s[1]}</b></div>`).join('');
+
+  $('stCustMetrics').innerHTML = [
+    ['Unique Customers', uniqueCustomersCount, 'var(--bl)'],
+    ['Total Visits / Transactions', totalBillsCount, 'var(--pu)'],
+    ['Average Bill Value', inr(avgBillValue, 2), 'var(--am)']
+  ].map(s => `<div class="mini"><span class="lbl">${s[0]}</span><b style="color:${s[2]}">${s[1]}</b></div>`).join('');
+
+  const sortedCustomers = Object.values(customerMap).sort((a, b) => b.totalSpent - a.totalSpent);
+  if (!sortedCustomers.length) {
+    $('stCustTable').innerHTML = `<tr><td colspan="4" style="text-align:center;padding:24px;color:var(--mu)">No customer purchases recorded yet.</td></tr>`;
+  } else {
+    $('stCustTable').innerHTML = sortedCustomers.map(c => `
+      <tr>
+        <td><b>${esc(c.name)}</b></td>
+        <td style="color:var(--mu)">${esc(c.phone)}</td>
+        <td style="text-align:center"><span class="pill">${c.orders} bill${c.orders > 1 ? 's' : ''}</span></td>
+        <td class="t" style="color:var(--ac)">${inr(c.totalSpent, 2)}</td>
+      </tr>
+    `).join('');
+  }
+
+  $('snaps').innerHTML = sn.length ? sn.map(s => `<div class="snap"><div><b>${esc(s.name)}</b><br><small>${new Date(s.time).toLocaleString()} · ${Object.keys(s.data).length} days</small></div>
+  <button class="btn" onclick="restoreSnap('${s.id}')">${ic('restore')} Restore</button><button class="ib" onclick="dlSnap('${s.id}')" title="Download">${ic('dl')}</button><button class="ib r" onclick="delSnap('${s.id}')" title="Delete">${ic('trash')}</button></div>`).join('') : '<div class="lbl" style="padding:14px 0 4px">No snapshots yet.</div>';
+}
+
+const pack=data=>JSON.stringify({app:'exotic-veggies',version:5,exported:new Date().toISOString(),data,khata},null,2);
+const MK='\n#EVDATA1#\n';
+async function backupBlob(d=db, k=khata){
+  const img=await docJpeg({title:'Data Backup',meta:['Created: '+new Date().toLocaleString(),'Restore it from Storage → Import in the app. Keep this file safe.'],cols:[['Backed-up data',70],['Count',30,1]],rows:[['Days of records',Object.keys(d).length],['Customer bills',Object.values(d).reduce((a,x)=>a+x.bills.length,0)],['Khata Customers',Object.keys(k).length]],foot:[]});
+  return new Blob([img,MK,JSON.stringify({app:'exotic-veggies',version:5,data:d,khata:k})],{type:'image/jpeg'})
+}
+function extract(buf){const u=new Uint8Array(buf),t=new TextDecoder().decode(u);if(u[0]===0xFF&&u[1]===0xD8){const i=t.lastIndexOf(MK);if(i<0)throw 0;return t.slice(i+MK.length)}return t}
+async function saveToDisk(json){
+  const name=`ExoticVeggies_Backup_${today()}.${json?'json':'jpg'}`,blob=json?new Blob([pack(db)],{type:'application/json'}):await backupBlob();
+  if(window.showSaveFilePicker){try{const h=await showSaveFilePicker({suggestedName:name,types:[json?{description:'JSON backup',accept:{'application/json':['.json']}}:{description:'JPEG backup',accept:{'image/jpeg':['.jpg']}}]});const w=await h.createWritable();await w.write(blob);await w.close();lsSet('ev_lastbk',Date.now());return toast('Backup saved to your device')}catch(e){if(e.name==='AbortError')return}}
+  dl(name,blob,blob.type);lsSet('ev_lastbk',Date.now());toast('Backup file downloaded')
+}
+function pick(m){mode=m;$('file').value='';$('file').click()}
+function importFile(inp){
+  const f=inp.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{try{
+    const j=JSON.parse(extract(r.result)),data=j.data||j,impKhata=j.khata||{};
+    if(!data||typeof data!=='object')throw 0;
+    if(!confirm(mode==='replace'?'Replace ALL current data with this file?':'Merge this file into your current data? Matching dates will be overwritten.'))return;
+    db=mode==='replace'?data:{...db,...data};
+    khata=mode==='replace'?impKhata:{...khata,...impKhata};
+    save();saveKhata();ensure(day);renderStorage();renderStock();renderKhata();toast('Backup imported')
+  }catch(e){toast('That file is not a valid Exotic Veggies backup')}};
+  r.readAsArrayBuffer(f)
+}
+function makeSnap(){
+  const s=snaps(),name=$('snapName').value.trim()||'Snapshot '+new Date().toLocaleString();
+  s.unshift({id:Date.now().toString(),name,time:Date.now(),data:JSON.parse(JSON.stringify(db))});lsSet(SK,JSON.stringify(s));$('snapName').value='';renderStorage();toast('Snapshot created')
+}
+function restoreSnap(id){const s=snaps().find(x=>x.id===id);if(s&&confirm(`Restore "${s.name}"? Current data will be replaced.`)){db=s.data;save();ensure(day);renderStorage();renderStock();toast('Snapshot restored')}}
+async function dlSnap(id){const s=snaps().find(x=>x.id===id);if(s)dl(`Snapshot_${s.name.replace(/[^\w-]+/g,'_')}.jpg`,await backupBlob(s.data),'image/jpeg')}
+function delSnap(id){if(confirm('Delete this snapshot?')){lsSet(SK,JSON.stringify(snaps().filter(x=>x.id!==id)));renderStorage()}}
+function eraseAll(){if(confirm('Erase ALL data from this browser? This cannot be undone.')&&confirm('Are you absolutely sure?')){db={};khata={};try{localStorage.removeItem(K);localStorage.removeItem(SK);localStorage.removeItem(KK)}catch(e){}ensure(day);renderStorage();renderStock();renderKhata();toast('All data erased')}}
+
+/* 7. JPEG RENDERER */
+function docJpeg(o){
+  const W=820,pad=36,rh=34,H=pad*2+104+o.meta.length*26+(o.rows.length+1)*rh+o.foot.length*34,F='system-ui,-apple-system,"Segoe UI",Roboto,sans-serif';
+  const c=document.createElement('canvas');c.width=W*2;c.height=H*2;const g=c.getContext('2d');g.scale(2,2);
+  g.fillStyle='#fff';g.fillRect(0,0,W,H);g.fillStyle='#059669';g.fillRect(0,0,W,8);
+  g.fillStyle='#064e3b';g.font=`700 26px ${F}`;g.fillText('🥦 Exotic Veggies',pad,pad+22);
+  g.fillStyle='#111';g.font=`600 18px ${F}`;g.fillText(o.title,pad,pad+52);
+  g.fillStyle='#555';g.font=`14px ${F}`;let y=pad+84;o.meta.forEach(m=>{g.fillText(m,pad,y);y+=26});
+  const tw=W-pad*2,sum=o.cols.reduce((a,x)=>a+x[1],0),cw=o.cols.map(x=>x[1]/sum*tw),xs=[];cw.reduce((a,w)=>(xs.push(a),a+w),pad);
+  const row=(r,yy,hd,alt)=>{g.fillStyle=hd?'#065f46':alt?'#f1f6f3':'#fff';g.fillRect(pad,yy,tw,rh);g.fillStyle=hd?'#fff':'#111';g.font=`${hd?600:400} 14px ${F}`;
+    r.forEach((t,i)=>{let q=String(t);while(g.measureText(q).width>cw[i]-14&&q.length>1)q=q.slice(0,-2)+'…';const R=o.cols[i][2];g.textAlign=R?'right':'left';g.fillText(q,R?xs[i]+cw[i]-8:xs[i]+8,yy+22)});g.textAlign='left'};
+  row(o.cols.map(x=>x[0]),y,1);o.rows.forEach((r,i)=>row(r,y+(i+1)*rh,0,i%2));
+  y+=(o.rows.length+1)*rh+26;g.textAlign='right';
+  o.foot.forEach(([l,v],i,a)=>{const last=i===a.length-1;g.font=`${last?700:500} ${last?19:15}px ${F}`;g.fillStyle=last?'#047857':'#333';g.fillText(l+'    '+v,W-pad,y);y+=34});
+  return new Promise(res=>c.toBlob(res,'image/jpeg',.92))
+}
+async function outJpeg(blob,name,share){
+  const f=new File([blob],name,{type:'image/jpeg'});
+  if(share&&navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:name});return}catch(e){if(e.name==='AbortError')return}}
+  dl(name,blob,'image/jpeg');toast('JPEG saved')
+}
+async function billJpeg(n,share){
+  const b=db[day].bills[n];
+  outJpeg(await docJpeg({
+    title: 'Customer Invoice' + (b.paymentType==='credit'?' (Credit / Udhar)':''),
+    meta: [
+      `Customer: ${b.custName}     Phone: ${b.custPhone}`,
+      `Date: ${day}     Time: ${b.time||''}     Payment: ${b.paymentType==='credit'?'Credit (Udhar)':'Paid Cash/UPI'}`
+    ],
+    cols: [
+      ['Item', 46],
+      ['Qty', 16],
+      ['Rate', 16, 1],
+      ['Total', 22, 1]
+    ],
+    rows: b.items.map(i => [i.name, i.qty + ' ' + i.unit, '₹' + i.rate, inr(i.total, 2)]),
+    foot: [
+      ['Subtotal', inr(bl.subtotal, 2)],
+      ...(b.discount > 0 ? [['Discount', '- ' + inr(b.discount)]] : []),
+      ['Grand Total', inr(bl.grandTotal, 2)]
+    ]
+  }), `Bill_${b.custName.replace(/\W+/g, '_')}_${day}.jpg`, share);
+}
+
+async function stockJpeg(){
+  const d=db[day];let sp=0,gt=0;d.stock.forEach(i=>{const t=num(i.qty)*(+i.rate||0);gt+=t;if(i.checked)sp+=t});
+  outJpeg(await docJpeg({title:'Stock Summary',meta:['Date: '+day,`Budget ${inr(d.budget)}   ·   Spent ${inr(sp)}   ·   Left ${inr(d.budget-sp)}`],
+    cols:[['Item',44],['Qty',14],['Rate',14,1],['Total',16,1],['Status',12]],rows:d.stock.map(i=>[i.name,i.qty,'₹'+i.rate,inr(num(i.qty)*i.rate),i.checked?'Received':'Pending']),foot:[['Stock Grand Total',inr(gt)]]}),`Stock_Summary_${day}.jpg`)
+}
+
+/* APP HELPERS */
+function status(){$('savedTxt').textContent=saved?'Saved '+saved.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'Auto-save on'}
+function backupNudge(){const t=+lsGet('ev_lastbk')||0,b=Object.values(db).reduce((a,d)=>a+d.bills.length,0);if(b&&Date.now()-t>6048e5)setTimeout(()=>toast('Tip: save a backup from the Storage tab'),1500)}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closeModal();closeKhataModal();closeStmtModal();closeVoiceReviewModal();}
+  if(e.key==='Enter'&&$('modal').classList.contains('show')&&e.target.tagName==='INPUT')saveItem();
+  if(e.key==='Enter'&&$('khModal').classList.contains('show')&&e.target.tagName==='INPUT')saveKhataEntry();
+});
+
+init();
+</script>
+</body>
+</html>
